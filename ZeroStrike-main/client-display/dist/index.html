@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero Strike - Display</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Teko', sans-serif;
+      background: #050508;
+    }
+    #game-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #050508;
+    }
+    /* Évite le “gap” baseline d’un canvas inline (barre en bas) */
+    #game-container canvas { display: block; }
+  </style>
+  <script type="module" crossorigin src="/display/assets/index-CBY80nb5.js"></script>
+  <link rel="stylesheet" crossorigin href="/display/assets/index-CGCm2Hqo.css">
+</head>
+<body>
+  <div id="game-container"></div>
+  <script>
+    // Défense en profondeur: fixe une taille explicite en px pour Phaser (fullscreen / zoom navigateur).
+    (function() {
+      var c = document.getElementById('game-container');
+      function size() {
+        c.style.width = window.innerWidth + 'px';
+        c.style.height = window.innerHeight + 'px';
+      }
+      size();
+      window.addEventListener('resize', size);
+      document.addEventListener('fullscreenchange', size);
+    })();
+  </script>
+</body>
+</html>

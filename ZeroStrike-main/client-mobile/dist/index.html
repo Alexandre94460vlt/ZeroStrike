@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="screen-orientation" content="landscape">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#000000">
+  <title>Zero Strike — Manette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Rajdhani:wght@400;600&family=Teko:wght@600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/mobile/assets/index-Dh_UW6bJ.js"></script>
+  <link rel="stylesheet" crossorigin href="/mobile/assets/index-BuiKDAsI.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ══════════════════════════════════════
+         ÉCRAN DE CONNEXION
+    ══════════════════════════════════════ -->
+    <div id="join-screen">
+      <div class="join-logo">
+        <span class="join-logo-zero">ZERO</span><span class="join-logo-strike">STRIKE</span>
+      </div>
+      <div class="join-tagline">Entrez dans la zone</div>
+
+      <div class="join-form">
+        <p id="join-status" class="join-status" role="status" aria-live="polite"></p>
+        <div class="join-field">
+          <label for="room-code-input">CODE PARTIE</label>
+          <input type="text" id="room-code-input" inputmode="text" autocomplete="one-time-code" autocorrect="off" spellcheck="false" maxlength="8" placeholder="EX. A2B4C" aria-describedby="room-code-hint">
+          <p id="room-code-hint" class="join-field-hint">Affiché sur l’écran du projecteur (ou prérempli si vous avez scanné le QR).</p>
+        </div>
+        <div class="join-field">
+          <label for="name-input">PSEUDO</label>
+          <input type="text" id="name-input" placeholder="MAX 12 CARACTÈRES" maxlength="12" autocomplete="off" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="join-field">
+          <div class="join-field-label-block" id="avatar-field-label">Photo du HUD <span class="join-optional">(optionnel)</span></div>
+          <div class="join-avatar-row">
+            <div id="avatar-preview" class="join-avatar-preview" role="img" aria-labelledby="avatar-field-label"></div>
+            <div class="join-avatar-side">
+              <label for="avatar-input" class="join-avatar-file-btn">Choisir une image</label>
+              <input type="file" id="avatar-input" accept="image/*" class="join-avatar-input-file">
+              <button type="button" id="avatar-clear-btn" class="join-avatar-clear-btn hidden">Retirer la photo</button>
+            </div>
+          </div>
+          <p class="join-field-hint">S’affiche en haut pendant la partie. Image carrée conseillée.</p>
+        </div>
+
+        <button id="join-btn">
+          <span>REJOINDRE LA PARTIE</span>
+          <span class="btn-arrow">▶</span>
+        </button>
+
+        <button id="fullscreen-btn-join" class="fullscreen-btn-join" type="button" title="Plein écran">
+          <span>⛶</span> Plein écran
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ÉCRAN DE JEU
+    ══════════════════════════════════════ -->
+    <div id="game-screen" class="hidden">
+
+      <!-- Déconnexion / reconnexion -->
+      <div id="disconnect-overlay" class="disconnect-overlay hidden" aria-hidden="true">
+        <div class="disconnect-card">
+          <p class="disconnect-title">Hors ligne</p>
+          <p id="disconnect-hint" class="disconnect-hint">Connexion interrompue…</p>
+          <button type="button" id="disconnect-retry-btn" class="disconnect-retry-btn hidden">Réessayer</button>
+        </div>
+      </div>
+
+      <!-- Shop d'achat (phase d'achat) -->
+      <div id="shop-overlay" class="hidden">
+        <div class="shop-header">
+          <div class="shop-title-block">
+            <h2>PHASE D'ACHAT</h2>
+            <p class="shop-timer-hint">Achetez avant le début du round</p>
+          </div>
+          <div class="shop-money-block">
+            <span class="shop-money-label">$</span>
+            <span id="shop-money">800</span>
+          </div>
+        </div>
+        <div id="shop-weapons"></div>
+        <div id="hero-roster" class="hero-roster">
+          <h3>◆ SÉLECTION DE HÉROS</h3>
+          <p id="hero-selection-hint" class="hero-selection-hint" role="status" aria-live="polite"></p>
+          <div id="hero-grid" class="hero-grid"></div>
+        </div>
+      </div>
+
+      <!-- Joysticks -->
+      <div id="joystick-left"></div>
+      <div id="joystick-right"></div>
+
+      <!-- Top bar (timer + score + avatars) — masquée : infos visibles sur le display uniquement -->
+      <div id="mobile-topbar" class="mobile-topbar hidden" aria-label="HUD haut">
+        <div id="mobile-topbar-att" class="mobile-topbar-team mobile-topbar-team--att" aria-label="Attaquants"></div>
+        <div class="mobile-topbar-center" aria-label="Timer et score">
+          <div id="mobile-topbar-timer" class="mobile-topbar-timer">0:00</div>
+          <div class="mobile-topbar-scoreline">
+            <span id="mobile-topbar-score-att" class="mobile-topbar-score mobile-topbar-score--att">0</span>
+            <span class="mobile-topbar-sep">–</span>
+            <span id="mobile-topbar-score-def" class="mobile-topbar-score mobile-topbar-score--def">0</span>
+          </div>
+        </div>
+        <div id="mobile-topbar-def" class="mobile-topbar-team mobile-topbar-team--def" aria-label="Défenseurs"></div>
+      </div>
+
+      <!-- HUD en jeu -->
+      <div id="hud">
+        <div class="hud-health">
+          <div class="hud-health-bar-wrap">
+            <div id="hud-health-bar" class="hud-health-bar"></div>
+          </div>
+          <span id="health">100</span>
+        </div>
+        <div class="hud-ammo">
+          <span id="ammo" class="hud-ammo-cur">30</span>
+          <span class="hud-ammo-sep">/</span>
+          <span id="ammo-reserve" class="hud-ammo-res">90</span>
+        </div>
+        <div class="hud-money">
+          <span class="hud-money-sign">$</span><span id="money">800</span>
+        </div>
+        <div id="hud-phase-timer" class="hud-phase-timer"></div>
+        <span id="hud-ping" class="hud-ping">--ms</span>
+        <span id="status" class="hud-status"></span>
+      </div>
+
+      <!-- Toast kill confirmation -->
+      <div id="kill-toast" class="kill-toast hidden" aria-live="polite"></div>
+
+      <!-- Toast power-up -->
+      <div id="powerup-toast" class="powerup-toast hidden"></div>
+
+      <!-- Boutons d'action -->
+      <div id="buttons">
+        <button id="btn-shoot" class="action-btn btn-shoot">TIR</button>
+        <div class="action-progress-wrap" aria-label="Action (pose/défuse/reload)">
+          <svg id="action-progress-ring" class="action-progress-ring hidden" viewBox="0 0 44 44" aria-hidden="true">
+            <circle class="action-progress-bg" cx="22" cy="22" r="18"></circle>
+            <circle id="action-progress-fg" class="action-progress-fg" cx="22" cy="22" r="18"></circle>
+          </svg>
+          <button id="action-btn" class="action-btn btn-action">RELOAD</button>
+        </div>
+        <button id="hero-power-btn" class="action-btn btn-power hidden">A</button>
+        <button id="hero-power-b-btn" class="action-btn btn-power-b hidden">B</button>
+      </div>
+
+      <!-- Lobby (en attente) -->
+      <div id="mobile-lobby" class="mobile-lobby hidden">
+        <div class="lobby-top">
+          <div class="lobby-title-row">
+            <div style="display: flex; align-items: center; padding-left: 48px;">
+              <button id="mobile-back-btn" class="lobby-back-btn" type="button" title="Quitter pour changer de pseudo">◀</button>
+              <h2 class="lobby-title">LOBBY</h2>
+            </div>
+            <span id="mobile-lobby-player-count" class="lobby-badge"></span>
+          </div>
+          <div id="mobile-lobby-settings" class="lobby-settings-line"></div>
+        </div>
+
+        <!-- Choix de carte (liste simple, grand confort tactile) -->
+        <div class="map-vote-section">
+          <div class="map-vote-label">Choisir la carte</div>
+          <div class="map-vote-list" role="group" aria-label="Vote carte">
+            <button type="button" class="map-card map-dist2" data-mapid="dist2">
+              <span class="map-thumb-wrap" aria-hidden="true">
+                <img class="map-thumb" src="/map/preview-dist2.png" alt="">
+              </span>
+              <span class="map-pick-text">
+                <span class="map-pick-name">DIST2</span>
+                <span class="map-pick-sub">Search &amp; destroy</span>
+              </span>
+              <span class="map-pick-count" id="vote-count-dist2">0</span>
+            </button>
+            <button type="button" class="map-card map-ascension" data-mapid="ascension">
+              <span class="map-thumb-wrap" aria-hidden="true">
+                <img class="map-thumb" src="/map/preview-ascension.png" alt="">
+              </span>
+              <span class="map-pick-text">
+                <span class="map-pick-name">ASCENSION</span>
+                <span class="map-pick-sub">Search &amp; destroy</span>
+              </span>
+              <span class="map-pick-count" id="vote-count-ascension">0</span>
+            </button>
+            <button type="button" class="map-card map-maven" data-mapid="maven">
+              <span class="map-thumb-wrap" aria-hidden="true">
+                <img class="map-thumb" src="/map/preview-Maven.png" alt="">
+              </span>
+              <span class="map-pick-text">
+                <span class="map-pick-name">MAVEN</span>
+                <span class="map-pick-sub">Search &amp; destroy</span>
+              </span>
+              <span class="map-pick-count" id="vote-count-maven">0</span>
+            </button>
+            <button type="button" class="map-card map-chadigo" data-mapid="chadigo">
+              <span class="map-thumb-wrap" aria-hidden="true">
+                <img class="map-thumb" src="/map/preview-chadigo.png" alt="">
+              </span>
+              <span class="map-pick-text">
+                <span class="map-pick-name">CHADIGO</span>
+                <span class="map-pick-sub">Search &amp; destroy</span>
+              </span>
+              <span class="map-pick-count" id="vote-count-chadigo">0</span>
+            </button>
+            <button type="button" class="map-card map-random map-random-row" data-mapid="random" aria-label="Vote carte aléatoire">
+              <span class="map-thumb-wrap map-thumb-random">Aléatoire</span>
+              <span class="map-pick-count" id="vote-count-random">0</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Système Prêt -->
+        <div class="lobby-ready-section">
+          <button id="ready-btn" class="ready-btn" type="button">PRÊT</button>
+          <div id="ready-status" class="ready-status">
+            <span id="ready-count-text">0 / 0 prêts</span>
+          </div>
+        </div>
+
+        <!-- Attente lancement -->
+        <div class="lobby-waiting">
+          <span class="waiting-dot"></span>
+          <span>Lancement depuis le grand écran</span>
+        </div>
+      </div>
+
+      <!-- Chat → relai grand écran : icône seule, barre au tap -->
+      <div id="mobile-chat-dock" class="mobile-chat-dock">
+        <div id="comment-bar" class="comment-bar comment-bar--collapsed" aria-hidden="true">
+          <input type="text" id="comment-input" placeholder="Au grand écran…" maxlength="60" autocomplete="off" enterkeyhint="send">
+          <button id="comment-send" type="button" title="Envoyer au grand écran">➤</button>
+        </div>
+        <button type="button" id="comment-chat-toggle" class="comment-chat-toggle" aria-expanded="false" aria-controls="comment-bar" title="Message au grand écran">💬</button>
+      </div>
+
+      <!-- Bouton plein écran -->
+      <button id="fullscreen-btn" class="fullscreen-btn" type="button" title="Plein écran" aria-label="Plein écran">
+        <span class="fullscreen-icon">⛶</span>
+      </button>
+
+      <!-- Bouton quitter (host mobile) -->
+      <button id="mobile-quit-btn" class="quit-btn hidden">✕</button>
+
+      <!-- Countdown 3-2-1 avant partie -->
+      <div id="countdown-overlay" class="countdown-overlay hidden" aria-hidden="true">
+        <div id="countdown-number" class="countdown-number">5</div>
+      </div>
+
+      <!-- Écran de fin de match -->
+      <div id="match-end-overlay" class="match-end-overlay hidden" aria-hidden="true">
+        <div id="match-end-result" class="match-end-result">VICTOIRE</div>
+        <div id="match-end-scores" class="match-end-scores">0 – 0</div>
+        <div id="match-end-body" class="match-end-body"></div>
+        <div class="match-end-sub">Retour au lobby…</div>
+      </div>
+
+      <!-- Flash de dégâts reçus (directionnel) -->
+      <div id="damage-flash" aria-hidden="true"></div>
+
+      <!-- Écran de mort -->
+      <div id="death-overlay" class="death-overlay hidden" aria-hidden="true">
+        <div class="death-title">ÉLIMINÉ</div>
+        <div class="death-by">par <span id="death-killer-name">???</span></div>
+        <div class="death-weapon-row">⚔ <span id="death-weapon-label">???</span></div>
+        <div id="death-respawn-text" class="death-respawn-text">PROCHAIN ROUND</div>
+      </div>
+
+      <!-- Scoreboard post-manche -->
+      <div id="scoreboard-overlay" class="scoreboard-overlay hidden" aria-hidden="true">
+        <div id="scoreboard-winner-banner" class="scoreboard-winner-banner">VICTOIRE</div>
+        <div id="scoreboard-scores-line" class="scoreboard-scores-line">0 – 0</div>
+        <div id="scoreboard-body" class="scoreboard-body"></div>
+        <div class="scoreboard-next">Prochain round dans quelques secondes…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay rotation forcée -->
+  <div id="rotate-overlay" class="rotate-overlay hidden">
+    <div class="rotate-content">
+      <div class="rotate-icon">↻</div>
+      <p>Tourne ton téléphone<br>en mode <strong>paysage</strong></p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 node_modules/
 # Builds Vite (racine + clients — explicite pour éviter tout doute avec les règles Git)
-dist/
-client-display/dist/
-client-mobile/dist/
+# dist/
+# client-display/dist/
+# client-mobile/dist/
 playwright-report/
 test-results/
 data/*.db
