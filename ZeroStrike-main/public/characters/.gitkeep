@@ -1,0 +1,4 @@
+# Placez ici les sprite sheets des personnages
+# defender_run.png, defender_shoot.png, defender_death.png
+# attacker_run.png, attacker_shoot.png, attacker_death.png
+# Voir MODELS_WORKFLOW.md pour le workflow Mixamo -> Blender -> PNG

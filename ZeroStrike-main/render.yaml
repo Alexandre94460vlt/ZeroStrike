@@ -1,0 +1,25 @@
+# Zero Strike - Déploiement Render
+# https://docs.render.com/blueprint-spec
+# Déploie : npm run build (display + mobile) puis npm start
+
+services:
+  - type: web
+    runtime: node
+    name: zero-strike
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      # Mot de passe salle display : à définir dans le dashboard Render (ne pas committer en clair).
+      - key: DISPLAY_PASSWORD
+        sync: false
+      # DB_PATH peut être surchargé pour pointer vers un volume persistant Render
+      # - key: DB_PATH
+      #   value: /var/data/leaderboard.db
+      # Optionnel (faible CPU/RAM) : intervalle min entre vagues de context_update mobile (ms), ex. 50
+      # - key: MOBILE_CONTEXT_MIN_MS
+      #   value: "50"

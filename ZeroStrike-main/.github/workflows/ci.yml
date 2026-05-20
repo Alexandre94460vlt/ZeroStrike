@@ -1,0 +1,54 @@
+# CI GitHub Actions — Zero Strike
+# Étapes : tests unitaires → build Vite → smoke HTTP Playwright (serveur :memory:)
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      # Couverture intégrée au runner Node (résumé en fin de log)
+      - run: npm run test:coverage
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Playwright (tests e2e = API request uniquement, pas de navigateur)
+        run: npm run test:e2e
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-dist
+          path: |
+            client-display/dist/
+            client-mobile/dist/
+          retention-days: 7

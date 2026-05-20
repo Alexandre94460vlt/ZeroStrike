@@ -1,0 +1,28 @@
+node_modules/
+# Builds Vite (racine + clients — explicite pour éviter tout doute avec les règles Git)
+dist/
+client-display/dist/
+client-mobile/dist/
+playwright-report/
+test-results/
+data/*.db
+*.log
+.env
+
+# OS & éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+
+# Artefacts / dumps locaux
+*.tmp
+*.temp
+*.bak
+error.txt
+check_size.js
+
+# Livrables locaux (souvent trop gros pour GitHub)
+ZeroStrike_TP4E-G1_Livrable.zip
+
+# Exemples ou kits hors projet (ne pas réintroduire dans le dépôt applicatif)
+Starter-Kit-City-Builder-main/
